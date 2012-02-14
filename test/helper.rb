@@ -10,57 +10,52 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'unix_utils'
 
-READY_MADE_DIR = ::File.expand_path('../ready_made', __FILE__)
-TO_BE_PROCESSED_DIR = ::File.expand_path('../to_be_processed', __FILE__)
-ZIP_SHA256 = '661af2b7b0993088263228b071b649a88d82a6a655562162c32307d1e127f27a'
-DIR_SIZE = 16
-ARCHIVE_ENTRIES = %w{ . .. hello_world.txt hello_world.xml }
-
 require 'fileutils'
 require 'tmpdir'
 
 module TestHelper
-  extend self
-  
-  def ready_made(method_id_or_extname)
-    ::File.join READY_MADE_DIR, "#{what_do_i_hold(method_id_or_extname)}.#{extname(method_id_or_extname)}"
-  end
-
-  def anonymous_ready_made(method_id_or_extname)
-    ::File.join READY_MADE_DIR, "#{what_do_i_hold(method_id_or_extname)}-really-a-#{extname(method_id_or_extname).to_s.chars.to_a.join('_')}-shh"
-  end
-  
-  def to_be_processed(method_id_or_extname)
-    return TO_BE_PROCESSED_DIR if method_id_or_extname == :dir
-    
-    case what_do_i_hold(method_id_or_extname)
+  def assert_does_not_touch(method_id, infile_or_srcdir)
+    mtime = File.mtime infile_or_srcdir
+    kind = File.file?(infile_or_srcdir) ? :file : :directory
+    case kind
     when :file
-      ::File.join TO_BE_PROCESSED_DIR, 'hello_world.txt'
+      checksum = UnixUtils.sha256 infile_or_srcdir
     when :directory
-      TO_BE_PROCESSED_DIR
+      size = UnixUtils.du infile_or_srcdir
+    end
+    destdir = UnixUtils.send method_id, infile_or_srcdir
+    rm_rf destdir
+    File.mtime(infile_or_srcdir).must_equal mtime
+    case kind
+    when :file
+      UnixUtils.sha256(infile_or_srcdir).must_equal checksum
+    when :directory
+      UnixUtils.du(infile_or_srcdir).must_equal size
     end
   end
   
-  def extname(method_id_or_extname)
-    case method_id_or_extname.to_s.downcase
-    when /b.*z/
-      :bz2
-    when /g.*z/
-      :gz
-    when /tar/
-      :tar
-    when /zip/
-      :zip
-    end
+  def assert_unpack_dir(method_id, infile)
+    destdir = UnixUtils.send method_id, infile
+    File.directory?(destdir).must_equal true
+    Dir.entries(destdir).must_equal %w{ . .. hello_world.txt hello_world.xml }
+    File.dirname(destdir).start_with?(Dir.tmpdir).must_equal true
+    rm_rf destdir
   end
-
-  def what_do_i_hold(method_id_or_extname)
-    case method_id_or_extname.to_s.downcase
-    when /b.*z/, /g.*z/
-      :file
-    when /zip/, /tar/
-      :directory
-    end
+  
+  def assert_unpack_file(method_id, infile)
+    outfile = UnixUtils.send method_id, infile
+    File.file?(outfile).must_equal true
+    `file #{outfile}`.chomp.must_match %r{text}
+    File.dirname(outfile).start_with?(Dir.tmpdir).must_equal true
+    rm_rf outfile
+  end
+    
+  def assert_pack(method_id, infile)
+    outfile = UnixUtils.send method_id, infile
+    File.file?(outfile).must_equal true
+    `file #{outfile}`.chomp.must_match %r{\b#{method_id.to_s.downcase}\b}
+    File.dirname(outfile).start_with?(Dir.tmpdir).must_equal true
+    rm_rf outfile
   end
   
   def rm_rf(path)
