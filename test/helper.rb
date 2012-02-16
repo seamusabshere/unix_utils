@@ -12,23 +12,25 @@ require 'unix_utils'
 
 require 'fileutils'
 require 'tmpdir'
+require 'tempfile'
 
 module TestHelper
-  def assert_does_not_touch(method_id, infile_or_srcdir)
+  def assert_does_not_touch(method_id, *args)
+    infile_or_srcdir = args.first
     mtime = File.mtime infile_or_srcdir
     kind = File.file?(infile_or_srcdir) ? :file : :directory
     case kind
     when :file
-      checksum = UnixUtils.sha256 infile_or_srcdir
+      checksum = UnixUtils.shasum infile_or_srcdir, 256
     when :directory
       size = UnixUtils.du infile_or_srcdir
     end
-    destdir = UnixUtils.send method_id, infile_or_srcdir
-    rm_rf destdir
+    destdir = UnixUtils.send(*([method_id] + args))
+    safe_delete destdir
     File.mtime(infile_or_srcdir).must_equal mtime
     case kind
     when :file
-      UnixUtils.sha256(infile_or_srcdir).must_equal checksum
+      UnixUtils.shasum(infile_or_srcdir, 256).must_equal checksum
     when :directory
       UnixUtils.du(infile_or_srcdir).must_equal size
     end
@@ -39,7 +41,7 @@ module TestHelper
     File.directory?(destdir).must_equal true
     Dir.entries(destdir).must_equal %w{ . .. hello_world.txt hello_world.xml }
     File.dirname(destdir).start_with?(Dir.tmpdir).must_equal true
-    rm_rf destdir
+    safe_delete destdir
   end
   
   def assert_unpack_file(method_id, infile)
@@ -47,7 +49,7 @@ module TestHelper
     File.file?(outfile).must_equal true
     `file #{outfile}`.chomp.must_match %r{text}
     File.dirname(outfile).start_with?(Dir.tmpdir).must_equal true
-    rm_rf outfile
+    safe_delete outfile
   end
     
   def assert_pack(method_id, infile)
@@ -55,12 +57,12 @@ module TestHelper
     File.file?(outfile).must_equal true
     `file #{outfile}`.chomp.must_match %r{\b#{method_id.to_s.downcase}\b}
     File.dirname(outfile).start_with?(Dir.tmpdir).must_equal true
-    rm_rf outfile
+    safe_delete outfile
   end
   
-  def rm_rf(path)
+  def safe_delete(path)
     path = File.expand_path path
-    raise "Refusing to rm_rf #{path} because it's not in #{Dir.tmpdir}" unless File.dirname(path).start_with?(Dir.tmpdir)
+    raise "Refusing to rm -rf #{path} because it's not in #{Dir.tmpdir}" unless File.dirname(path).start_with?(Dir.tmpdir)
     FileUtils.rm_rf path
   end
 end
