@@ -4,6 +4,12 @@ Like FileUtils, but provides zip, unzip, bzip2, bunzip2, tar, untar, sed, du, md
 
 Works in MRI 1.8.7+, MRI 1.9.2+, and JRuby 1.6.7+
 
+## Where it's used
+
+* [Brighter Planet Reference Data web service](http://data.brighterplanet.com)
+* [Brighter Planet Emission Estimate web service](http://impact.brighterplanet.com) aka CM1
+* Extracted from [`remote_table`](https://github.com/seamusabshere/remote_table)
+
 ## What to expect
 
 For commands like zip, untar, sed, head, cut, dos2unix, etc.:
@@ -61,12 +67,6 @@ You get the same low memory footprint with
 ## Compatibility
 
 Uses `open3` because it's in the Ruby stdlib and is consistent across MRI and JRuby.
-
-## Where it's used
-
-* [Brighter Planet Reference Data web service](http://data.brighterplanet.com)
-* [Brighter Planet Emission Estimate web service](http://impact.brighterplanet.com) aka CM1
-* [`remote_table` library](https://github.com/seamusabshere/remote_table)
 
 ## Authors
 
