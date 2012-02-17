@@ -8,9 +8,9 @@ Works in MRI 1.8.7+, MRI 1.9.2+, and JRuby 1.6.7+
 
 For commands like zip, untar, sed, head, cut, dos2unix, etc.:
 
-1. Just returns a path to the output, randomly named, located in the system tmp dir (`UnixUtils.unzip('kittens.zip)` &rarr; '/tmp/unix_utils-129392301-kittens')
+1. Just returns a path to the output, randomly named, located in the system tmp dir (`UnixUtils.unzip('kittens.zip)` &rarr; `'/tmp/unix_utils-129392301-kittens'`)
 2. Never touches the input
-3. Sticks a useful file extension on the output, if applicable (`UnixUtils.tar('puppies/)` &rarr; '/tmp/unix_utils-99293192-puppies.tar')
+3. Sticks a useful file extension on the output, if applicable (`UnixUtils.tar('puppies/')` &rarr; `'/tmp/unix_utils-99293192-puppies.tar'`)
 
 For commands like du, md5sum, shasum, etc.:
 
