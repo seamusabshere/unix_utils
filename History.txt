@@ -1,0 +1,9 @@
+== 0.0.2 / 2012-02-16
+
+* Bug fixes
+
+  * Fix use of splat internally so that it actually runs in MRI 1.8.7 and JRuby
+
+== 0.0.1 / 2012-02-16 (yanked!)
+
+* Birthday!
