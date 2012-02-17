@@ -20,7 +20,7 @@ module UnixUtils
       argv += [ '--data', form_data ]
     end
     argv += [ uri.to_s, '--output', outfile ]
-    spawn *argv
+    spawn argv
     outfile
   end
 
@@ -36,10 +36,12 @@ module UnixUtils
   # 01b1210962b3d1e5e1ccba26f93d98efbb7b315b463f9f6bdb40ab496728d886 *.bash_profile
   def self.shasum(infile, algorithm)
     if available?('shasum')
-      stdout = spawn 'shasum', '--binary', '-a', algorithm.to_s, infile
+      argv = ['shasum', '--binary', '-a', algorithm.to_s, infile]
+      stdout = spawn argv
       stdout.strip.split(' ').first
     else
-      stdout = spawn 'openssl', 'dgst', "-sha#{algorithm}", infile
+      argv = ['openssl', 'dgst', "-sha#{algorithm}", infile]
+      stdout = spawn argv
       stdout.strip.split(' ').last
     end
   end
@@ -53,21 +55,25 @@ module UnixUtils
   # 8d01e54ab8142d6786850e22d55a1b6c *.mysql_history  
   def self.md5sum(infile)
     if available?('md5sum')
-      stdout = spawn 'md5sum', '--binary', infile
+      argv = ['md5sum', '--binary', infile]
+      stdout = spawn argv
       stdout.strip.split(' ').first
     else
-      stdout = spawn 'openssl', 'dgst', '-md5', infile
+      argv = ['openssl', 'dgst', '-md5', infile]
+      stdout = spawn argv
       stdout.strip.split(' ').last
     end
   end
     
   def self.du(srcdir)
-    stdout = spawn 'du', srcdir
+    argv = ['du', srcdir]
+    stdout = spawn argv
     stdout.strip.split(/\s+/).first.to_i
   end
   
   def self.wc(infile)
-    stdout = spawn 'wc', infile
+    argv = ['wc', infile]
+    stdout = spawn argv
     stdout.strip.split(/\s+/)[0..2].map { |s| s.to_i }
   end
 
@@ -76,26 +82,30 @@ module UnixUtils
   def self.unzip(infile)
     destdir = tmp_path infile
     ::FileUtils.mkdir destdir
-    spawn 'unzip', '-qq', '-n', infile, '-d', destdir
+    argv = ['unzip', '-qq', '-n', infile, '-d', destdir]
+    spawn argv
     destdir
   end
 
   def self.untar(infile)
     destdir = tmp_path infile
     ::FileUtils.mkdir destdir
-    spawn 'tar', '-xf', infile, '-C', destdir
+    argv = ['tar', '-xf', infile, '-C', destdir]
+    spawn argv
     destdir
   end
 
   def self.gunzip(infile)
     outfile = tmp_path infile
-    spawn 'gunzip', '--stdout', infile, :write_to => outfile
+    argv = ['gunzip', '--stdout', infile]
+    spawn argv, :write_to => outfile
     outfile
   end
 
   def self.bunzip2(infile)
     outfile = tmp_path infile
-    spawn 'bunzip2', '--stdout', infile, :write_to => outfile
+    argv = ['bunzip2', '--stdout', infile,]
+    spawn argv, :write_to => outfile
     outfile
   end
 
@@ -103,25 +113,29 @@ module UnixUtils
 
   def self.bzip2(infile)
     outfile = tmp_path infile, '.bz2'
-    spawn 'bzip2', '--keep', '--stdout', infile, :write_to => outfile
+    argv = ['bzip2', '--keep', '--stdout', infile]
+    spawn argv, :write_to => outfile
     outfile
   end
   
   def self.tar(srcdir)
     outfile = tmp_path srcdir, '.tar'
-    spawn 'tar', '-cf', outfile, '-C', srcdir, '.'
+    argv = ['tar', '-cf', outfile, '-C', srcdir, '.']
+    spawn argv
     outfile
   end
 
   def self.zip(srcdir)
     outfile = tmp_path srcdir, '.zip'
-    spawn 'zip', '-rq', outfile, '.', :chdir => srcdir
+    argv = ['zip', '-rq', outfile, '.']
+    spawn argv, :chdir => srcdir
     outfile
   end
   
   def self.gzip(infile)
     outfile = tmp_path infile, '.gz'
-    spawn 'gzip', '--stdout', infile, :write_to => outfile
+    argv = ['gzip', '--stdout', infile]
+    spawn argv, :write_to => outfile
     outfile
   end
   
@@ -130,16 +144,16 @@ module UnixUtils
   def self.awk(infile, *expr)
     outfile = tmp_path infile
     bin = available?('gawk') ? 'gawk' : 'awk'
-    argv = [ bin, expr, infile ].flatten
-    spawn(*argv, :write_to => outfile)
+    argv = [bin, expr, infile].flatten
+    spawn argv, :write_to => outfile
     outfile
   end
   
   # Yes, this is a very limited use of perl.
   def self.perl(infile, *expr)
     outfile = tmp_path infile
-    argv = ['perl', expr.map { |e| ['-pe', e] } ].flatten
-    spawn(*argv, :read_from => infile, :write_to => outfile)
+    argv = [ 'perl', expr.map { |e| ['-pe', e] } ].flatten
+    spawn argv, :read_from => infile, :write_to => outfile
     outfile
   end
   
@@ -163,32 +177,36 @@ module UnixUtils
     outfile = tmp_path infile
     bin = available?('gsed') ? 'gsed' : 'sed'
     argv = [ bin, expr.map { |e| ['-e', e] } ].flatten
-    spawn(*argv, :read_from => infile, :write_to => outfile)
+    spawn argv, :read_from => infile, :write_to => outfile
     outfile
   end
 
   def self.tail(infile, lines)
     outfile = tmp_path infile
-    spawn 'tail', '-n', lines.to_s, infile, :write_to => outfile
+    argv = ['tail', '-n', lines.to_s, infile]
+    spawn argv, :write_to => outfile
     outfile
   end
   
   def self.head(infile, lines)
     outfile = tmp_path infile
-    spawn 'head', '-n', lines.to_s, infile, :write_to => outfile
+    argv = ['head', '-n', lines.to_s, infile]
+    spawn argv, :write_to => outfile
     outfile
   end
 
   # specify character_positions as a string like "3-5" or "3,9-10"
   def self.cut(infile, character_positions)
     outfile = tmp_path infile
-    spawn 'cut', '-c', character_positions, infile, :write_to => outfile
+    argv = ['cut', '-c', character_positions, infile]
+    spawn argv, :write_to => outfile
     outfile
   end
 
   def self.iconv(infile, to, from)
     outfile = tmp_path infile
-    spawn 'iconv', '-t', to, '-f', from, infile, :write_to => outfile
+    argv = ['iconv', '-t', to, '-f', from, infile]
+    spawn argv, :write_to => outfile
     outfile
   end
   
@@ -207,10 +225,7 @@ module UnixUtils
     ::File.join ::Dir.tmpdir, "unix_utils-#{::Kernel.rand(1e11)}-#{name}"
   end
 
-  def self.spawn(*argv) # :nodoc:
-    argv = argv.dup
-    options = argv.last.is_a?(::Hash) ? argv.pop : {}
-    
+  def self.spawn(argv, options = {}) # :nodoc:
     if options[:chdir]
       old_pwd = ::Dir.pwd
       ::Dir.chdir options[:chdir]
