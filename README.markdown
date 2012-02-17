@@ -6,11 +6,25 @@ Works in MRI 1.8.7+, MRI 1.9.2+, and JRuby 1.6.7+
 
 ## Where it's used
 
+* [Brighter Planet CM1 Impact Estimate web service](http://impact.brighterplanet.com) 
 * [Brighter Planet Reference Data web service](http://data.brighterplanet.com)
-* [Brighter Planet Emission Estimate web service](http://impact.brighterplanet.com) aka CM1
 * Extracted from [`remote_table`](https://github.com/seamusabshere/remote_table)
 
-## What to expect
+## Philosophy
+
+Use a subprocess to perform a big task and then get out of memory.
+
+<table>
+  <tr>
+    <td rowspan="2"><img src="https://raw.github.com/seamusabshere/unix_utils/master/unix-philosophy-cover.png" alt="cover of the Unix Philosophy book" /></td>
+    <td><img src="https://raw.github.com/seamusabshere/unix_utils/master/unix-philosophy-quote-pg1.png" alt="Tenet 2: Make Each Program Do One Thing Well. The best programs, like Cousteau's lake fly, does but one task in its life and does it well. The program is loaded into memory, accomplishes its function, and then gets out ot the way to allow" /></td>
+  </tr>
+  <tr>
+    <td><img src="https://raw.github.com/seamusabshere/unix_utils/master/unix-philosophy-quote-pg2.png" alt="the next single-minded program to begin. This sounds simple, yet it may surprise you how many software developers have difficulty sticking to this singular goal." /></td>
+  </tr>
+</table>
+
+## Rules
 
 For commands like zip, untar, sed, head, cut, dos2unix, etc.:
 
@@ -22,10 +36,6 @@ For commands like du, md5sum, shasum, etc.:
 
 1. Just returns the good stuff (the checksum, for example, not the filename that is listed after it in the standard command output)
 2. Never touches the input
-
-## Philosophy
-
-Use a subprocess to perform a big task and then get out of memory.
 
 ## But I can just spawn these myself
 
