@@ -24,7 +24,7 @@ Use a subprocess to perform a big task and then get out of memory.
   </tr>
 </table>
 
-## Rules
+## Rules (what you can expect)
 
 For commands like zip, untar, sed, head, cut, dos2unix, etc.:
 
@@ -54,6 +54,8 @@ is replaced safely with
     destdir = UnixUtils.unzip 'kittens.zip'
 
 ## But I can just use `Digest::SHA256`
+
+(Note: [Balazs Kutil](https://github.com/bkutil) pointed out [this is a bad example](https://gist.github.com/1950707)... I will replace it soon)
 
 This will load an entire file into memory before it can be processed...
 
