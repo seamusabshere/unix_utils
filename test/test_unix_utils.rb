@@ -6,11 +6,11 @@ describe UnixUtils do
     @old_pwd = Dir.pwd
     Dir.chdir File.expand_path('../target', __FILE__)
   end
-  
+
   after do
     Dir.chdir @old_pwd
   end
-  
+
   describe :curl do
     it "downloads to a temp file" do
       outfile = UnixUtils.curl('http://brighterplanet.com')
@@ -18,7 +18,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :shasum do
     it "checksums a file with SHA-1" do
       UnixUtils.shasum('directory.zip', 1).must_equal 'c0abb36c923ed7bf87ebb8d7097cb8e264e528d2'
@@ -27,7 +27,7 @@ describe UnixUtils do
       UnixUtils.shasum('directory.zip', 256).must_equal '661af2b7b0993088263228b071b649a88d82a6a655562162c32307d1e127f27a'
     end
   end
-  
+
   describe :md5sum do
     it "checksums a file" do
       UnixUtils.md5sum('directory.zip').must_equal 'd6e15da798ae19551da6c49ec09afaef'
@@ -39,7 +39,7 @@ describe UnixUtils do
       UnixUtils.du('directory').must_equal 16
     end
   end
-  
+
   describe :unzip do
     before do
       @infile = 'directory.zip'
@@ -55,7 +55,7 @@ describe UnixUtils do
       assert_does_not_touch :unzip, @infile
     end
   end
-  
+
   describe :untar do
     before do
       @infile = 'directory.tar'
@@ -71,7 +71,7 @@ describe UnixUtils do
       assert_does_not_touch :untar, @infile
     end
   end
-  
+
   describe :bunzip2 do
     before do
       @infile = 'file.bz2'
@@ -87,7 +87,7 @@ describe UnixUtils do
       assert_does_not_touch :bunzip2, @infile
     end
   end
-  
+
   describe :gunzip do
     before do
       @infile = 'file.gz'
@@ -103,7 +103,7 @@ describe UnixUtils do
       assert_does_not_touch :gunzip, @infile
     end
   end
-  
+
   describe :bzip2 do
     before do
       @infile = 'directory.tar'
@@ -120,7 +120,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :gzip do
     before do
       @infile = 'directory.tar'
@@ -137,7 +137,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :zip do
     before do
       @srcdir = 'directory'
@@ -154,7 +154,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :tar do
     before do
       @srcdir = 'directory'
@@ -171,7 +171,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :perl do
     before do
       @f = Tempfile.new('perl.txt')
@@ -196,7 +196,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :awk do
     before do
       @f = Tempfile.new('awk.txt')
@@ -221,7 +221,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :unix2dos do
     before do
       @f = Tempfile.new('unix2dos.txt')
@@ -239,7 +239,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :dos2unix do
     before do
       @f = Tempfile.new('dos2unix.txt')
@@ -257,7 +257,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :wc do
     before do
       @f = Tempfile.new('wc.txt')
@@ -297,7 +297,7 @@ describe UnixUtils do
       File.extname(outfile).must_equal File.extname(@infile)
       safe_delete outfile
     end
-    
+
   end
 
   describe :tail do
@@ -322,7 +322,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :head do
     before do
       @a2z = ('a'..'z').to_a
@@ -340,7 +340,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :cut do
     before do
       @a2z = ('a'..'z').to_a
@@ -367,7 +367,7 @@ describe UnixUtils do
       safe_delete outfile
     end
   end
-  
+
   describe :iconv do
     it 'converts files from utf-8 to latin1' do
       outfile = UnixUtils.iconv('utf8.txt', 'ISO-8859-1', 'UTF-8')

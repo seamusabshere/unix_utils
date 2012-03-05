@@ -6,7 +6,7 @@ Works in MRI 1.8.7+, MRI 1.9.2+, and JRuby 1.6.7+
 
 ## Where it's used
 
-* [Brighter Planet CM1 Impact Estimate web service](http://impact.brighterplanet.com) 
+* [Brighter Planet CM1 Impact Estimate web service](http://impact.brighterplanet.com)
 * [Brighter Planet Reference Data web service](http://data.brighterplanet.com)
 * Extracted from [`remote_table`](https://github.com/seamusabshere/remote_table)
 

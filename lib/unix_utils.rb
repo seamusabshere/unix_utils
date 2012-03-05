@@ -26,13 +26,13 @@ module UnixUtils
 
   #--
   # most platforms
-  # $ openssl dgst -sha256 .bash_profile 
+  # $ openssl dgst -sha256 .bash_profile
   # SHA256(.bash_profile)= ae12206aaa35dc96273ed421f4e85ca26a1707455e3cc9f054c7f5e2e9c53df6
   # ubuntu 11.04
-  # $ shasum -a 256 --portable .mysql_history 
+  # $ shasum -a 256 --portable .mysql_history
   # 856aa27deb0b80b41031c2ddf722af28ba2a8c4999ff9cf2d45f33bc67d992ba ?.mysql_history
   # fedora 7
-  # $ sha256sum --binary .bash_profile 
+  # $ sha256sum --binary .bash_profile
   # 01b1210962b3d1e5e1ccba26f93d98efbb7b315b463f9f6bdb40ab496728d886 *.bash_profile
   def self.shasum(infile, algorithm)
     if available?('shasum')
@@ -45,14 +45,14 @@ module UnixUtils
       stdout.strip.split(' ').last
     end
   end
-  
+
   #--
   # os x 10.6.8; most platforms
-  # $ openssl dgst -md5 .bashrc 
+  # $ openssl dgst -md5 .bashrc
   # MD5(.bashrc)= 88f464fb6d1d6fe9141135248bf7b265
   # ubuntu 11.04; fedora 7; gentoo
-  # $ md5sum --binary .mysql_history 
-  # 8d01e54ab8142d6786850e22d55a1b6c *.mysql_history  
+  # $ md5sum --binary .mysql_history
+  # 8d01e54ab8142d6786850e22d55a1b6c *.mysql_history
   def self.md5sum(infile)
     if available?('md5sum')
       argv = ['md5sum', '--binary', infile]
@@ -64,13 +64,13 @@ module UnixUtils
       stdout.strip.split(' ').last
     end
   end
-    
+
   def self.du(srcdir)
     argv = ['du', srcdir]
     stdout = spawn argv
     stdout.strip.split(/\s+/).first.to_i
   end
-  
+
   def self.wc(infile)
     argv = ['wc', infile]
     stdout = spawn argv
@@ -78,7 +78,7 @@ module UnixUtils
   end
 
   # --
-  
+
   def self.unzip(infile)
     destdir = tmp_path infile
     ::FileUtils.mkdir destdir
@@ -117,7 +117,7 @@ module UnixUtils
     spawn argv, :write_to => outfile
     outfile
   end
-  
+
   def self.tar(srcdir)
     outfile = tmp_path srcdir, '.tar'
     argv = ['tar', '-cf', outfile, '-C', srcdir, '.']
@@ -131,16 +131,16 @@ module UnixUtils
     spawn argv, :chdir => srcdir
     outfile
   end
-  
+
   def self.gzip(infile)
     outfile = tmp_path infile, '.gz'
     argv = ['gzip', '--stdout', infile]
     spawn argv, :write_to => outfile
     outfile
   end
-  
+
   # --
-  
+
   def self.awk(infile, *expr)
     outfile = tmp_path infile
     bin = available?('gawk') ? 'gawk' : 'awk'
@@ -148,7 +148,7 @@ module UnixUtils
     spawn argv, :write_to => outfile
     outfile
   end
-  
+
   # Yes, this is a very limited use of perl.
   def self.perl(infile, *expr)
     outfile = tmp_path infile
@@ -156,7 +156,7 @@ module UnixUtils
     spawn argv, :read_from => infile, :write_to => outfile
     outfile
   end
-  
+
   def self.unix2dos(infile)
     if available?('gawk') or available?('awk')
       awk infile, '{ sub(/\r/, ""); printf("%s\r\n", $0) }'
@@ -164,7 +164,7 @@ module UnixUtils
       perl infile, 's/\r\n|\n|\r/\r\n/g'
     end
   end
-  
+
   def self.dos2unix(infile)
     if available?('gawk') or available?('awk')
       awk infile, '{ sub(/\r/, ""); printf("%s\n", $0) }'
@@ -187,7 +187,7 @@ module UnixUtils
     spawn argv, :write_to => outfile
     outfile
   end
-  
+
   def self.head(infile, lines)
     outfile = tmp_path infile
     argv = ['head', '-n', lines.to_s, infile]
@@ -209,7 +209,7 @@ module UnixUtils
     spawn argv, :write_to => outfile
     outfile
   end
-  
+
   def self.available?(bin) # :nodoc:
     bin = bin.to_s
     return @@available_query[bin] if defined?(@@available_query) and @@available_query.is_a?(::Hash) and @@available_query.has_key?(bin)
@@ -230,7 +230,7 @@ module UnixUtils
       old_pwd = ::Dir.pwd
       ::Dir.chdir options[:chdir]
     end
-    
+
     whole_stdout = nil
     whole_stderr = nil
 
@@ -256,7 +256,7 @@ module UnixUtils
       else
         whole_stdout = stdout.read
       end
-      
+
       # deal with STDERR
       whole_stderr = stderr.read
     end
