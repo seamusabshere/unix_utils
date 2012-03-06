@@ -1,11 +1,14 @@
 require 'fileutils'
 require 'tmpdir'
 require 'uri'
-require 'open3'
+require 'posix/spawn'
 
 require "unix_utils/version"
 
 module UnixUtils
+
+  # Options passed directly to POSIX::Spawn.popen4
+  POPEN_OPTIONS = [:chdir]
 
   def self.curl(url, form_data = nil)
     outfile = tmp_path url
@@ -35,6 +38,7 @@ module UnixUtils
   # $ sha256sum --binary .bash_profile
   # 01b1210962b3d1e5e1ccba26f93d98efbb7b315b463f9f6bdb40ab496728d886 *.bash_profile
   def self.shasum(infile, algorithm)
+    infile = ::File.expand_path infile
     if available?('shasum')
       argv = ['shasum', '--binary', '-a', algorithm.to_s, infile]
       stdout = spawn argv
@@ -54,6 +58,7 @@ module UnixUtils
   # $ md5sum --binary .mysql_history
   # 8d01e54ab8142d6786850e22d55a1b6c *.mysql_history
   def self.md5sum(infile)
+    infile = ::File.expand_path infile
     if available?('md5sum')
       argv = ['md5sum', '--binary', infile]
       stdout = spawn argv
@@ -66,12 +71,14 @@ module UnixUtils
   end
 
   def self.du(srcdir)
+    srcdir = ::File.expand_path srcdir
     argv = ['du', srcdir]
     stdout = spawn argv
     stdout.strip.split(/\s+/).first.to_i
   end
 
   def self.wc(infile)
+    infile = ::File.expand_path infile
     argv = ['wc', infile]
     stdout = spawn argv
     stdout.strip.split(/\s+/)[0..2].map { |s| s.to_i }
@@ -80,6 +87,7 @@ module UnixUtils
   # --
 
   def self.unzip(infile)
+    infile = ::File.expand_path infile
     destdir = tmp_path infile
     ::FileUtils.mkdir destdir
     argv = ['unzip', '-qq', '-n', infile, '-d', destdir]
@@ -88,6 +96,7 @@ module UnixUtils
   end
 
   def self.untar(infile)
+    infile = ::File.expand_path infile
     destdir = tmp_path infile
     ::FileUtils.mkdir destdir
     argv = ['tar', '-xf', infile, '-C', destdir]
@@ -96,6 +105,7 @@ module UnixUtils
   end
 
   def self.gunzip(infile)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
     argv = ['gunzip', '--stdout', infile]
     spawn argv, :write_to => outfile
@@ -103,8 +113,9 @@ module UnixUtils
   end
 
   def self.bunzip2(infile)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
-    argv = ['bunzip2', '--stdout', infile,]
+    argv = ['bunzip2', '--stdout', infile]
     spawn argv, :write_to => outfile
     outfile
   end
@@ -112,6 +123,7 @@ module UnixUtils
   # --
 
   def self.bzip2(infile)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile, '.bz2'
     argv = ['bzip2', '--keep', '--stdout', infile]
     spawn argv, :write_to => outfile
@@ -119,6 +131,7 @@ module UnixUtils
   end
 
   def self.tar(srcdir)
+    srcdir = ::File.expand_path srcdir
     outfile = tmp_path srcdir, '.tar'
     argv = ['tar', '-cf', outfile, '-C', srcdir, '.']
     spawn argv
@@ -126,6 +139,7 @@ module UnixUtils
   end
 
   def self.zip(srcdir)
+    srcdir = ::File.expand_path srcdir
     outfile = tmp_path srcdir, '.zip'
     argv = ['zip', '-rq', outfile, '.']
     spawn argv, :chdir => srcdir
@@ -133,6 +147,7 @@ module UnixUtils
   end
 
   def self.gzip(infile)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile, '.gz'
     argv = ['gzip', '--stdout', infile]
     spawn argv, :write_to => outfile
@@ -142,6 +157,7 @@ module UnixUtils
   # --
 
   def self.awk(infile, *expr)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
     bin = available?('gawk') ? 'gawk' : 'awk'
     argv = [bin, expr, infile].flatten
@@ -151,6 +167,7 @@ module UnixUtils
 
   # Yes, this is a very limited use of perl.
   def self.perl(infile, *expr)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
     argv = [ 'perl', expr.map { |e| ['-pe', e] } ].flatten
     spawn argv, :read_from => infile, :write_to => outfile
@@ -158,6 +175,7 @@ module UnixUtils
   end
 
   def self.unix2dos(infile)
+    infile = ::File.expand_path infile
     if available?('gawk') or available?('awk')
       awk infile, '{ sub(/\r/, ""); printf("%s\r\n", $0) }'
     else
@@ -166,6 +184,7 @@ module UnixUtils
   end
 
   def self.dos2unix(infile)
+    infile = ::File.expand_path infile
     if available?('gawk') or available?('awk')
       awk infile, '{ sub(/\r/, ""); printf("%s\n", $0) }'
     else
@@ -174,6 +193,7 @@ module UnixUtils
   end
 
   def self.sed(infile, *expr)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
     bin = available?('gsed') ? 'gsed' : 'sed'
     argv = [ bin, expr.map { |e| ['-e', e] } ].flatten
@@ -182,6 +202,7 @@ module UnixUtils
   end
 
   def self.tail(infile, lines)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
     argv = ['tail', '-n', lines.to_s, infile]
     spawn argv, :write_to => outfile
@@ -189,6 +210,7 @@ module UnixUtils
   end
 
   def self.head(infile, lines)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
     argv = ['head', '-n', lines.to_s, infile]
     spawn argv, :write_to => outfile
@@ -197,6 +219,7 @@ module UnixUtils
 
   # specify character_positions as a string like "3-5" or "3,9-10"
   def self.cut(infile, character_positions)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
     argv = ['cut', '-c', character_positions, infile]
     spawn argv, :write_to => outfile
@@ -204,6 +227,7 @@ module UnixUtils
   end
 
   def self.iconv(infile, to, from)
+    infile = ::File.expand_path infile
     outfile = tmp_path infile
     argv = ['iconv', '-t', to, '-f', from, infile]
     spawn argv, :write_to => outfile
@@ -226,40 +250,42 @@ module UnixUtils
   end
 
   def self.spawn(argv, options = {}) # :nodoc:
-    if options[:chdir]
-      old_pwd = ::Dir.pwd
-      ::Dir.chdir options[:chdir]
+    # activesupport Hash#slice... if only...
+    popen_options = options.inject({}) do |memo, (k, v)|
+      if POPEN_OPTIONS.include? k
+        memo[k] = v
+      end
+      memo
     end
 
-    whole_stdout = nil
-    whole_stderr = nil
-
-    ::Open3.popen3(*argv) do |stdin, stdout, stderr|
-      # deal with STDIN
-      if options[:read_from]
-        ::File.open(options[:read_from], 'r') do |in_f|
-          while chunk = in_f.read(4_194_304)
-            stdin.write chunk
-          end
+    pid, stdin, stdout, stderr = ::POSIX::Spawn.popen4(*(argv+[popen_options]))
+    
+    # deal with STDIN
+    if options[:read_from]
+      ::File.open(options[:read_from], 'r') do |in_f|
+        while chunk = in_f.read(4_194_304)
+          stdin.write chunk
         end
       end
-      stdin.close
-
-      # deal with STDOUT
-      if options[:write_to]
-        ::File.open(options[:write_to], 'wb') do |out_f|
-          while chunk = stdout.read(4_194_304)
-            out_f.write chunk
-          end
-        end
-        whole_stdout = "Redirected to #{options[:write_to]}"
-      else
-        whole_stdout = stdout.read
-      end
-
-      # deal with STDERR
-      whole_stderr = stderr.read
     end
+    stdin.close
+
+    # deal with STDOUT
+    if options[:write_to]
+      ::File.open(options[:write_to], 'wb') do |out_f|
+        while chunk = stdout.read(4_194_304)
+          out_f.write chunk
+        end
+      end
+      whole_stdout = "Redirected to #{options[:write_to]}"
+    else
+      whole_stdout = stdout.read
+    end
+
+    # deal with STDERR
+    whole_stderr = stderr.read
+
+    ::Process.waitpid pid
 
     unless whole_stderr.empty?
       $stderr.puts "[unix_utils] `#{argv.join(' ')}` STDERR:"
@@ -269,8 +295,6 @@ module UnixUtils
     whole_stdout
 
   ensure
-    if options[:chdir]
-      ::Dir.chdir old_pwd
-    end
+    [stdin, stdout, stderr].each { |io| io.close if io and not io.closed? }
   end
 end

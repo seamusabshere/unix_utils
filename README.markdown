@@ -78,7 +78,9 @@ You get the same low memory footprint with
 
 ## Compatibility
 
-Uses `open3` because it's in the Ruby stdlib and is consistent across MRI and JRuby.
+Now using [`posix-spawn`](https://github.com/rtomayko/posix-spawn) for speed. Thanks for the suggestion [jjb](https://github.com/jjb)!
+
+Previously used `open3` because it's in the Ruby stdlib and is consistent across MRI and JRuby.
 
 ## Authors
 

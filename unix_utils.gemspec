@@ -15,4 +15,6 @@ Gem::Specification.new do |gem|
   gem.name          = "unix_utils"
   gem.require_paths = ["lib"]
   gem.version       = UnixUtils::VERSION
+
+  gem.add_runtime_dependency 'posix-spawn'
 end

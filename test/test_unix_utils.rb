@@ -26,6 +26,12 @@ describe UnixUtils do
     it "checksums a file with SHA-256" do
       UnixUtils.shasum('directory.zip', 256).must_equal '661af2b7b0993088263228b071b649a88d82a6a655562162c32307d1e127f27a'
     end
+    it "works just as well with absolute paths" do
+      target_path = File.join(Dir.pwd, 'directory.zip')
+      Dir.chdir('/') do
+        UnixUtils.shasum(target_path, 256).must_equal '661af2b7b0993088263228b071b649a88d82a6a655562162c32307d1e127f27a'
+      end
+    end
   end
 
   describe :md5sum do
