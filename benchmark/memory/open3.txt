@@ -1,0 +1,43 @@
+Thread ID: 2148446520
+Total: 89.468750
+
+ %self     total     self     wait    child    calls  name
+ 79.00     74.52    70.68     0.00    28.56        8  Kernel#require
+  2.64      2.36     2.36     0.00     0.00        2  IO#read
+  1.14      1.02     1.02     0.00     0.00        4  <Class::Object>#allocate
+  0.94     89.47     0.84     0.00    88.63        1  Global#[No method]
+  0.72      0.64     0.64     0.00     0.00        6  IO#initialize
+  0.65      0.58     0.58     0.00     0.00        4  Hash#default
+  0.65      0.58     0.58     0.00     0.00        6  IO#close
+  0.65      0.58     0.58     0.00     0.00       27  Kernel#singleton_method_added
+  0.65      1.16     0.58     0.00     0.58        4  Hash#[]
+  0.63     14.10     0.56     0.00    13.54        1  <Module::UnixUtils>#shasum
+  0.62      2.41     0.55     0.00     1.86        1  <Module::UnixUtils>#available?
+  0.61      0.55     0.55     0.00     0.00        1  String#split
+  0.60      0.54     0.54     0.00     0.00        1  String#strip
+  0.59      0.53     0.53     0.00     0.00        1  Exception#initialize
+  0.59      0.75     0.53     0.00     0.22        1  <Module::Process>#waitpid
+  0.59      1.11     0.53     0.00     0.58        1  <Module::Kernel>#system
+  0.51      7.79     0.46     0.00     7.33        1  <Module::Open3>#popen3
+  0.51      9.32     0.45     0.00     8.87        1  <Module::UnixUtils>#spawn
+  0.45      1.41     0.41     0.00     1.00        3  <Class::IO>#pipe
+  0.44      0.39     0.39     0.00     0.00        1  Hash#[]=
+  0.41      0.36     0.36     0.00     0.00        1  Fixnum#to_s
+  0.40      1.11     0.36     0.00     0.75        1  Class#new
+  0.40      0.36     0.36     0.00     0.00        1  IO#write
+  0.40      0.94     0.36     0.00     0.58        1  Array#each
+  0.40      0.36     0.36     0.00     0.00        1  Kernel#fork
+  0.40      0.36     0.36     0.00     0.00        7  Array#[]
+  0.40      0.36     0.36     0.00     0.00        1  String#empty?
+  0.40      0.36     0.36     0.00     0.00        1  Exception#exception
+  0.40      0.36     0.36     0.00     0.00        1  Module#===
+  0.40      0.36     0.36     0.00     0.00        3  IO#closed?
+  0.40      0.36     0.36     0.00     0.00        1  Process::Status#to_int
+  0.40      0.36     0.36     0.00     0.00        1  String#to_s
+  0.40      0.36     0.36     0.00     0.00        1  Array#first
+  0.40      0.36     0.36     0.00     0.00        1  Exception#set_backtrace
+  0.40      0.36     0.36     0.00     0.00        1  Exception#backtrace
+  0.40      0.36     0.36     0.00     0.00        1  IO#sync=
+  0.40      0.36     0.36     0.00     0.00        6  <Class::IO>#allocate
+
+
