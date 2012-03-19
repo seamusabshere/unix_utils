@@ -1,3 +1,14 @@
+== 0.0.3 / 2012-03-19
+
+* Enhancements
+
+  * Uses https://github.com/rtomayko/posix-spawn to make things faster - suggested by @jjb in https://github.com/seamusabshere/unix_utils/issues/1
+  * Depends less on chdir to work properly - expands file paths immediately
+
+* Bug fixes
+
+  * Correctly use pipes (I hope) - imitate POSIX::Spawn::Child's use of IO.select
+
 == 0.0.2 / 2012-02-16
 
 * Bug fixes
