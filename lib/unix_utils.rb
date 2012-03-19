@@ -1,14 +1,14 @@
 require 'fileutils'
 require 'tmpdir'
 require 'uri'
+require 'stringio'
 require 'posix/spawn'
 
 require "unix_utils/version"
 
 module UnixUtils
 
-  # Options passed directly to POSIX::Spawn.popen4
-  POPEN_OPTIONS = [:chdir]
+  BUFSIZE = 4_194_304
 
   def self.curl(url, form_data = nil)
     outfile = tmp_path url
@@ -250,51 +250,76 @@ module UnixUtils
   end
 
   def self.spawn(argv, options = {}) # :nodoc:
-    # activesupport Hash#slice... if only...
-    popen_options = options.inject({}) do |memo, (k, v)|
-      if POPEN_OPTIONS.include? k
-        memo[k] = v
-      end
-      memo
+    options = options.dup
+
+    input = if (read_from = options.delete(:read_from))
+      ::File.open(read_from, 'r')
     end
 
-    pid, stdin, stdout, stderr = ::POSIX::Spawn.popen4(*(argv+[popen_options]))
-    
-    # deal with STDIN
-    if options[:read_from]
-      ::File.open(options[:read_from], 'r') do |in_f|
-        while chunk = in_f.read(4_194_304)
-          stdin.write chunk
-        end
-      end
-    end
-    stdin.close
-
-    # deal with STDOUT
-    if options[:write_to]
-      ::File.open(options[:write_to], 'wb') do |out_f|
-        while chunk = stdout.read(4_194_304)
-          out_f.write chunk
-        end
-      end
-      whole_stdout = "Redirected to #{options[:write_to]}"
+    output = if (write_to = options.delete(:write_to))
+      output_redirected = true
+      ::File.open(write_to, 'wb')
     else
-      whole_stdout = stdout.read
+      output_redirected = false
+      ::StringIO.new
     end
 
-    # deal with STDERR
-    whole_stderr = stderr.read
+    error = ::StringIO.new
+
+    pid, stdin, stdout, stderr = ::POSIX::Spawn.popen4(*(argv+[options]))
+    
+    # lifted from posix-spawn
+    # https://github.com/rtomayko/posix-spawn/blob/master/lib/posix/spawn/child.rb
+    readers = [stdout, stderr]
+    writers = if input
+      [stdin]
+    else
+      stdin.close
+      []
+    end
+    while readers.any? or writers.any?
+      ready = ::IO.select(readers, writers, readers + writers)
+      # write to stdin stream
+      ready[1].each do |fd|
+        begin
+          boom = nil
+          size = fd.write_nonblock(input.read(BUFSIZE))
+        rescue ::Errno::EPIPE => boom
+        rescue ::Errno::EAGAIN, ::Errno::EINTR
+        end
+        if boom || size < BUFSIZE
+          stdin.close
+          input.close
+          writers.delete(stdin)
+        end
+      end
+      # read from stdout and stderr streams
+      ready[0].each do |fd|
+        buf = (fd == stdout) ? output : error
+        begin
+          buf << fd.readpartial(BUFSIZE)
+        rescue ::Errno::EAGAIN, ::Errno::EINTR
+        rescue ::EOFError
+          readers.delete(fd)
+          fd.close
+        end
+      end
+    end
+    # thanks @tmm1 and @rtomayko for showing how it's done!
 
     ::Process.waitpid pid
 
-    unless whole_stderr.empty?
+    error.rewind
+    unless (whole_error = error.read).empty?
       $stderr.puts "[unix_utils] `#{argv.join(' ')}` STDERR:"
-      $stderr.puts whole_stderr
+      $stderr.puts whole_error.read
     end
 
-    whole_stdout
-
+    unless output_redirected
+      output.rewind
+      output.read
+    end
   ensure
-    [stdin, stdout, stderr].each { |io| io.close if io and not io.closed? }
+    [stdin, stdout, stderr, input, output, error].each { |io| io.close if io and not io.closed? }
   end
 end

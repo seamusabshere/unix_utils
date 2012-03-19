@@ -6,4 +6,4 @@ gemspec
 gem 'minitest'
 gem 'minitest-reporters'
 gem 'yard'
-gem 'ruby-prof'
+# gem 'ruby-prof'
