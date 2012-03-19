@@ -7,9 +7,6 @@ require "unix_utils/version"
 
 module UnixUtils
 
-  # Options passed directly to POSIX::Spawn.popen4
-  POPEN_OPTIONS = [:chdir]
-
   def self.curl(url, form_data = nil)
     outfile = tmp_path url
     if url.start_with?('/') or url.start_with?('file://')
@@ -250,51 +247,36 @@ module UnixUtils
   end
 
   def self.spawn(argv, options = {}) # :nodoc:
-    # activesupport Hash#slice... if only...
-    popen_options = options.inject({}) do |memo, (k, v)|
-      if POPEN_OPTIONS.include? k
-        memo[k] = v
-      end
-      memo
+    options = options.dup
+
+    if read_from = options.delete(:read_from)
+      options[:in] = ::File.open(read_from, 'r')
     end
 
-    pid, stdin, stdout, stderr = ::POSIX::Spawn.popen4(*(argv+[popen_options]))
-    
-    # deal with STDIN
-    if options[:read_from]
-      ::File.open(options[:read_from], 'r') do |in_f|
-        while chunk = in_f.read(4_194_304)
-          stdin.write chunk
-        end
-      end
+    if write_to = options.delete(:write_to)
+      options[:out] = ::File.open(write_to, 'wb')
+      stdout = "Redirected to #{write_to}"
     end
-    stdin.close
 
-    # deal with STDOUT
-    if options[:write_to]
-      ::File.open(options[:write_to], 'wb') do |out_f|
-        while chunk = stdout.read(4_194_304)
-          out_f.write chunk
-        end
-      end
-      whole_stdout = "Redirected to #{options[:write_to]}"
+    if options.has_key?(:in) or options.has_key?(:out)
+      pid = ::POSIX::Spawn.spawn(*(argv+[options]))
+      ::Process.waitpid pid
+      stdout = nil
+      stderr = nil
     else
-      whole_stdout = stdout.read
+      child = ::POSIX::Spawn::Child.new(*(argv+[options]))
+      stdout = child.out
+      stderr = child.err
     end
 
-    # deal with STDERR
-    whole_stderr = stderr.read
-
-    ::Process.waitpid pid
-
-    unless whole_stderr.empty?
+    if stderr and stderr.strip.length > 0
       $stderr.puts "[unix_utils] `#{argv.join(' ')}` STDERR:"
-      $stderr.puts whole_stderr
+      $stderr.puts stderr
     end
 
-    whole_stdout
+    stdout
 
   ensure
-    [stdin, stdout, stderr].each { |io| io.close if io and not io.closed? }
+    [options[:in], options[:out]].each { |io| io.close if io and not io.closed? }
   end
 end
