@@ -1,5 +1,11 @@
 == 0.0.3 / 2012-03-19
 
+* Bug fixes
+
+  * NoMethodError when trying to print $stderr - thanks @leomao10 !
+
+== 0.0.3 / 2012-03-19
+
 * Enhancements
 
   * Uses https://github.com/rtomayko/posix-spawn to make things faster - suggested by @jjb in https://github.com/seamusabshere/unix_utils/issues/1
