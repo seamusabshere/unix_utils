@@ -312,7 +312,7 @@ module UnixUtils
     error.rewind
     unless (whole_error = error.read).empty?
       $stderr.puts "[unix_utils] `#{argv.join(' ')}` STDERR:"
-      $stderr.puts whole_error.read
+      $stderr.puts whole_error
     end
 
     unless output_redirected
