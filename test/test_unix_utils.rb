@@ -11,6 +11,21 @@ describe UnixUtils do
     Dir.chdir @old_pwd
   end
 
+  describe "errors" do
+    it "gets printed to stderr" do
+      begin
+        old_stderr = $stderr
+        capture = StringIO.new
+        $stderr = capture
+        UnixUtils.unzip(__FILE__)
+        capture.rewind
+        capture.read.must_match %r{End-of-central-directory signature not found}
+      ensure
+        $stderr = old_stderr
+      end
+    end
+  end
+
   describe :curl do
     it "downloads to a temp file" do
       outfile = UnixUtils.curl('http://brighterplanet.com')

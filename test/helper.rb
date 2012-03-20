@@ -11,6 +11,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'unix_utils'
 
+require 'stringio'
 require 'fileutils'
 require 'tmpdir'
 require 'tempfile'
