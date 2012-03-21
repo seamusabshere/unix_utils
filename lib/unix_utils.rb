@@ -192,12 +192,13 @@ module UnixUtils
     end
   end
 
+  # POSIX sed, whether it's provided by sed or gsed
   def self.sed(infile, *expr)
     infile = ::File.expand_path infile
     outfile = tmp_path infile
-    bin = available?('gsed') ? 'gsed' : 'sed'
-    argv = [ bin, expr.map { |e| ['-e', e] } ].flatten
-    spawn argv, :read_from => infile, :write_to => outfile
+    bin = available?('sed') ? 'sed' : ['gsed', '--posix']
+    argv = [ bin, expr.map { |e| ['-e', e] }, infile ].flatten
+    spawn argv, :write_to => outfile
     outfile
   end
 
