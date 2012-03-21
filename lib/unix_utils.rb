@@ -8,7 +8,7 @@ require "unix_utils/version"
 
 module UnixUtils
 
-  BUFSIZE = 4_194_304
+  BUFSIZE = 2**16
 
   def self.curl(url, form_data = nil)
     outfile = tmp_path url
