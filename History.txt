@@ -1,3 +1,13 @@
+== 0.0.5 / 2012-03-21
+
+* Enhancements
+
+  * Change pipe buffer size to 64kb (it was 4mb before), which seems to make everything run faster
+
+* Bug fixes
+
+  * Thanks to @leomao10, make sed work more reliably on large files by using its input-file argument rather than piping in data
+
 == 0.0.4 / 2012-03-19
 
 * Bug fixes
