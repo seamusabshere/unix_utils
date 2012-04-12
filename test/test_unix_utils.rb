@@ -413,7 +413,7 @@ describe UnixUtils do
       File.extname(UnixUtils.tmp_path("dirname1/dirname2/basename.extname", '.foobar')).must_equal '.foobar'
     end
     it "doesn't create excessively long filenames" do
-      File.basename(UnixUtils.tmp_path("a"*5000)).length.must_equal 255
+      File.basename(UnixUtils.tmp_path("a"*5000)).length.must_equal 254
     end
     it "doesn't include directory part of ancestor" do
       UnixUtils.tmp_path("dirname1/dirname2/basename.extname").wont_include 'dirname1'
