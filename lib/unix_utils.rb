@@ -230,7 +230,7 @@ module UnixUtils
   def self.iconv(infile, to, from)
     infile = ::File.expand_path infile
     outfile = tmp_path infile
-    argv = ['iconv', '-t', to, '-f', from, infile]
+    argv = ['iconv', '-c', '-t', to, '-f', from, infile]
     spawn argv, :write_to => outfile
     outfile
   end

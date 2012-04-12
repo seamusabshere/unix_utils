@@ -1,3 +1,9 @@
+== 0.0.6 / 2012-04-11
+
+* Enhancements
+
+  * iconv command silently discards invalid characters
+
 == 0.0.5 / 2012-03-21
 
 * Enhancements
