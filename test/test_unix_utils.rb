@@ -282,8 +282,8 @@ describe UnixUtils do
   describe :wc do
     before do
       @f = Tempfile.new('wc.txt')
-      @f.write "dos line\r\n"*5_000
-      @f.write "unix line\n"*5_000
+      @f.write "dos line\r\n"*50_000
+      @f.write "unix line\n"*50_000
       @f.flush
       @infile = @f.path
     end
@@ -291,7 +291,7 @@ describe UnixUtils do
       @f.close
     end
     it 'counts lines, words, and bytes' do
-      UnixUtils.wc(@infile).must_equal [5_000+5_000, 10_000+10_000, 50_000+50_000]
+      UnixUtils.wc(@infile).must_equal [50_000+50_000, 100_000+100_000, 500_000+500_000]
     end
   end
 
@@ -417,6 +417,24 @@ describe UnixUtils do
     end
     it "doesn't include directory part of ancestor" do
       UnixUtils.tmp_path("dirname1/dirname2/basename.extname").wont_include 'dirname1'
+    end
+  end
+
+  # not really for public consumption
+  describe :spawn do
+    before do
+      @f = Tempfile.new('spawn.txt')
+      @f.write "dos line\r\n"*50_000
+      @f.write "unix line\n"*50_000
+      @f.flush
+      @infile = @f.path
+    end
+    after do
+      @f.close
+    end
+    it 'reads and writes everything' do
+      wc_output = UnixUtils.spawn(['wc'], :read_from => @infile)
+      wc_output.strip.split(/\s+/)[0..2].map { |s| s.to_i }.must_equal [50_000+50_000, 100_000+100_000, 500_000+500_000]
     end
   end
 end

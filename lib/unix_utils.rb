@@ -285,7 +285,7 @@ module UnixUtils
       ready[1].each do |fd|
         begin
           boom = nil
-          size = fd.write_nonblock(input.read(BUFSIZE))
+          size = fd.write(input.read(BUFSIZE))
         rescue ::Errno::EPIPE => boom
         rescue ::Errno::EAGAIN, ::Errno::EINTR
         end
