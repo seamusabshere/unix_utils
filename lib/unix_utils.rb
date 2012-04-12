@@ -169,8 +169,8 @@ module UnixUtils
   def self.perl(infile, *expr)
     infile = ::File.expand_path infile
     outfile = tmp_path infile
-    argv = [ 'perl', expr.map { |e| ['-pe', e] } ].flatten
-    spawn argv, :read_from => infile, :write_to => outfile
+    argv = [ 'perl', expr.map { |e| ['-pe', e] }, infile ].flatten
+    spawn argv, :write_to => outfile
     outfile
   end
 

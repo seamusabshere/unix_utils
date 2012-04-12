@@ -1,3 +1,9 @@
+== 0.0.8 / 2012-04-12
+
+* Bug fixes
+
+  * Let perl handle its own input files (ARGF)... my implementation using IO.select was not working.
+
 == 0.0.7 / 2012-04-11
 
 * Bug fixes

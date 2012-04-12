@@ -196,7 +196,7 @@ describe UnixUtils do
   describe :perl do
     before do
       @f = Tempfile.new('perl.txt')
-      @f.write "bad\n"*10
+      @f.write "badWord\n"*10_000
       @f.flush
       @infile = @f.path
     end
@@ -205,7 +205,7 @@ describe UnixUtils do
     end
     it "processes a file" do
       outfile = UnixUtils.perl(@infile, 's/bad/good/g')
-      File.read(outfile).must_equal "good\n"*10
+      File.read(outfile).must_equal "goodWord\n"*10_000
       safe_delete outfile
     end
     it "does not touch the infile" do
@@ -221,7 +221,7 @@ describe UnixUtils do
   describe :awk do
     before do
       @f = Tempfile.new('awk.txt')
-      @f.write "bad\n"*10
+      @f.write "badWord\n"*10_000
       @f.flush
       @infile = @f.path
     end
@@ -230,7 +230,7 @@ describe UnixUtils do
     end
     it "processes a file" do
       outfile = UnixUtils.awk(@infile, '{gsub(/bad/, "good"); print}')
-      File.read(outfile).must_equal "good\n"*10
+      File.read(outfile).must_equal "goodWord\n"*10_000
       safe_delete outfile
     end
     it "does not touch the infile" do
@@ -246,8 +246,8 @@ describe UnixUtils do
   describe :unix2dos do
     before do
       @f = Tempfile.new('unix2dos.txt')
-      @f.write "unix\n"*5
-      @f.write "dos\r\n"*5
+      @f.write "unix\n"*5_000
+      @f.write "dos\r\n"*5_000
       @f.flush
       @infile = @f.path
     end
@@ -256,7 +256,7 @@ describe UnixUtils do
     end
     it 'converts newlines' do
       outfile = UnixUtils.unix2dos @infile
-      File.read(outfile).must_equal("unix\r\n"*5 + "dos\r\n"*5)
+      File.read(outfile).must_equal("unix\r\n"*5_000 + "dos\r\n"*5_000)
       safe_delete outfile
     end
   end
@@ -282,8 +282,8 @@ describe UnixUtils do
   describe :wc do
     before do
       @f = Tempfile.new('wc.txt')
-      @f.write "dos line\r\n"*5
-      @f.write "unix line\n"*5
+      @f.write "dos line\r\n"*5_000
+      @f.write "unix line\n"*5_000
       @f.flush
       @infile = @f.path
     end
@@ -291,14 +291,14 @@ describe UnixUtils do
       @f.close
     end
     it 'counts lines, words, and bytes' do
-      UnixUtils.wc(@infile).must_equal [5+5, 10+10, 50+50]
+      UnixUtils.wc(@infile).must_equal [5_000+5_000, 10_000+10_000, 50_000+50_000]
     end
   end
 
   describe :sed do
     before do
       @f = Tempfile.new('sed.txt')
-      @f.write "bad\n"*10
+      @f.write "badWord\n"*10_000
       @f.flush
       @infile = @f.path
     end
@@ -307,7 +307,7 @@ describe UnixUtils do
     end
     it "processes a file" do
       outfile = UnixUtils.sed(@infile, 's/bad/good/g')
-      File.read(outfile).must_equal "good\n"*10
+      File.read(outfile).must_equal "goodWord\n"*10_000
       safe_delete outfile
     end
     it "does not touch the infile" do
