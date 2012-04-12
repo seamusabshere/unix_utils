@@ -243,11 +243,12 @@ module UnixUtils
   end
 
   def self.tmp_path(ancestor, extname = nil) # :nodoc:
+    ancestor = ancestor.to_s
     extname ||= ::File.extname ancestor
-    basename = ::File.basename ancestor.sub(/^unix_utils-[0-9]+-/, '').gsub(/\W+/, '_')
-    name = basename + extname
+    basename = ::File.basename ancestor.sub(/^unix_utils-[0-9]+-/, '')
+    basename.gsub! /\W+/, '_'
     ::Kernel.srand
-    ::File.join ::Dir.tmpdir, "unix_utils-#{::Kernel.rand(1e11)}-#{name}"
+    ::File.join ::Dir.tmpdir, "unix_utils-#{::Kernel.rand(1e11)}-#{basename[0..(231-extname.length)]}#{extname}"
   end
 
   def self.spawn(argv, options = {}) # :nodoc:
