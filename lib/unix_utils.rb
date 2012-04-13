@@ -324,4 +324,18 @@ module UnixUtils
   ensure
     [stdin, stdout, stderr, input, output, error].each { |io| io.close if io and not io.closed? }
   end
+
+  def self.method_missing(method_id, *args)
+    base_method_id = method_id.to_s.chomp('_s')
+    if respond_to?(base_method_id)
+      begin
+        outfile = send(*([base_method_id]+args))
+        ::File.read outfile
+      ensure
+        ::FileUtils.rm_f outfile
+      end
+    else
+      super
+    end
+  end
 end

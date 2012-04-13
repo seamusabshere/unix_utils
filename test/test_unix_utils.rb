@@ -342,6 +342,10 @@ describe UnixUtils do
       File.read(outfile).must_equal @a2z[2..-1].join("\n")
       safe_delete outfile
     end
+    it 'has a related tail_s method' do
+      str = UnixUtils.tail_s(@infile, 3)
+      str.must_equal @a2z.last(3).join("\n")
+    end
   end
 
   describe :head do
@@ -359,6 +363,10 @@ describe UnixUtils do
       outfile = UnixUtils.head(@infile, 3)
       File.read(outfile).must_equal(@a2z.first(3).join("\n") + "\n")
       safe_delete outfile
+    end
+    it 'has a related head_s method' do
+      str = UnixUtils.head_s(@infile, 3)
+      str.must_equal(@a2z.first(3).join("\n") + "\n")
     end
   end
 
