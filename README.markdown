@@ -4,11 +4,16 @@ Like FileUtils, but provides zip, unzip, bzip2, bunzip2, tar, untar, sed, du, md
 
 Works in MRI 1.8.7+, MRI 1.9.2+, and JRuby 1.6.7+
 
-## Where it's used
+## Real-world usage
 
-* [Brighter Planet CM1 Impact Estimate web service](http://impact.brighterplanet.com)
-* [Brighter Planet Reference Data web service](http://data.brighterplanet.com)
-* Extracted from [`remote_table`](https://github.com/seamusabshere/remote_table)
+<p><a href="http://brighterplanet.com"><img src="https://s3.amazonaws.com/static.brighterplanet.com/assets/logos/flush-left/inline/green/rasterized/brighter_planet-160-transparent.png" alt="Brighter Planet logo"/></a></p>
+
+We use `unix_utils` for [data science at Brighter Planet](http://brighterplanet.com/research) and in production at
+
+* [Brighter Planet's impact estimate web service](http://impact.brighterplanet.com)
+* [Brighter Planet's reference data web service](http://data.brighterplanet.com)
+
+Originally extracted from [`remote_table`](https://github.com/seamusabshere/remote_table)
 
 ## Philosophy
 
