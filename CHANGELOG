@@ -1,5 +1,9 @@
 unreleased
 
+* Breaking changes
+
+  * Added UnixUtils.du_sk, which always returns bytes; removed UnixUtils.du, which returned block counts, which I doubt you wanted.
+
 * Enhancements
 
   * If you call a method with _s at the end, you get a string back. For example: UnixUtils.head_s

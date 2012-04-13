@@ -70,9 +70,9 @@ module UnixUtils
     end
   end
 
-  def self.du(srcdir)
+  def self.du_sk(srcdir)
     srcdir = ::File.expand_path srcdir
-    argv = ['du', srcdir]
+    argv = ['du', '-sk', srcdir]
     stdout = spawn argv
     stdout.strip.split(/\s+/).first.to_i
   end

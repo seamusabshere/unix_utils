@@ -25,7 +25,7 @@ module TestHelper
     when :file
       checksum = UnixUtils.shasum infile_or_srcdir, 256
     when :directory
-      size = UnixUtils.du infile_or_srcdir
+      size = UnixUtils.du_sk infile_or_srcdir
     end
     destdir = UnixUtils.send(*([method_id] + args))
     safe_delete destdir
@@ -34,7 +34,7 @@ module TestHelper
     when :file
       UnixUtils.shasum(infile_or_srcdir, 256).must_equal checksum
     when :directory
-      UnixUtils.du(infile_or_srcdir).must_equal size
+      UnixUtils.du_sk(infile_or_srcdir).must_equal size
     end
   end
 
