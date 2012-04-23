@@ -3,7 +3,7 @@ require 'tmpdir'
 require 'uri'
 require 'stringio'
 require 'posix/spawn'
-
+require 'securerandom'
 require "unix_utils/version"
 
 module UnixUtils
@@ -245,10 +245,9 @@ module UnixUtils
   def self.tmp_path(ancestor, extname = nil) # :nodoc:
     ancestor = ancestor.to_s
     extname ||= ::File.extname ancestor
-    basename = ::File.basename ancestor.sub(/^unix_utils-[0-9]+-/, '')
+    basename = ::File.basename ancestor.gsub(/unix_utils_[a-f0-9]{8,}_/, '')
     basename.gsub! /\W+/, '_'
-    ::Kernel.srand
-    ::File.join ::Dir.tmpdir, "unix_utils-#{::Kernel.rand(1e11)}-#{basename[0..(231-extname.length)]}#{extname}"
+    ::File.join ::Dir.tmpdir, "unix_utils_#{::SecureRandom.hex(4)}_#{basename[0..(234-extname.length)]}#{extname}"
   end
 
   def self.spawn(argv, options = {}) # :nodoc:
