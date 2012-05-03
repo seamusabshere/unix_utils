@@ -21,11 +21,11 @@ Use a subprocess to perform a big task and then get out of memory.
 
 <table>
   <tr>
-    <td rowspan="2"><img src="https://raw.github.com/seamusabshere/unix_utils/master/unix-philosophy-cover.png" alt="cover of the Unix Philosophy book" /></td>
-    <td><img src="https://raw.github.com/seamusabshere/unix_utils/master/unix-philosophy-quote-pg1.png" alt="Tenet 2: Make Each Program Do One Thing Well. The best programs, like Cousteau's lake fly, does but one task in its life and does it well. The program is loaded into memory, accomplishes its function, and then gets out ot the way to allow" /></td>
+    <td rowspan="2"><img src="https://github.com/seamusabshere/unix_utils/raw/master/unix-philosophy-cover.png" alt="cover of the Unix Philosophy book" /></td>
+    <td><img src="https://github.com/seamusabshere/unix_utils/raw/master/unix-philosophy-quote-pg1.png" alt="Tenet 2: Make Each Program Do One Thing Well. The best programs, like Cousteau's lake fly, does but one task in its life and does it well. The program is loaded into memory, accomplishes its function, and then gets out ot the way to allow" /></td>
   </tr>
   <tr>
-    <td><img src="https://raw.github.com/seamusabshere/unix_utils/master/unix-philosophy-quote-pg2.png" alt="the next single-minded program to begin. This sounds simple, yet it may surprise you how many software developers have difficulty sticking to this singular goal." /></td>
+    <td><img src="https://github.com/seamusabshere/unix_utils/raw/master/unix-philosophy-quote-pg2.png" alt="the next single-minded program to begin. This sounds simple, yet it may surprise you how many software developers have difficulty sticking to this singular goal." /></td>
   </tr>
 </table>
 
