@@ -2,7 +2,7 @@ unreleased
 
 * Bug fixes
 
-  * Typo in UnixUtils.curl
+  * Fix handling of local files by UnixUtils.curl
 
 0.0.10 / 2012-14-23
 

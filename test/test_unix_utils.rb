@@ -32,6 +32,12 @@ describe UnixUtils do
       File.read(outfile).must_match %r{sustain}i
       safe_delete outfile
     end
+
+    it "deals safely with local files" do
+      UnixUtils.curl_s('utf8.txt').must_include 'Hola, ¿cómo estás?'
+      UnixUtils.curl_s(File.expand_path('utf8.txt')).must_include 'Hola, ¿cómo estás?'
+      UnixUtils.curl_s("file://#{File.expand_path('utf8.txt')}").must_include 'Hola, ¿cómo estás?'
+    end
   end
 
   describe :shasum do

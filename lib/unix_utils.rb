@@ -12,9 +12,10 @@ module UnixUtils
 
   def self.curl(url, form_data = nil)
     outfile = tmp_path url
-    if url.start_with?('/') or url.start_with?('file://')
+    if url.start_with?('file://') or url.start_with?('/') or url.count('/') == 0
       # deal with local files
-      ::FileUtils.cp url.sub(%{r^file://}), outfile
+      infile = ::File.expand_path url.sub('file://', '')
+      ::FileUtils.cp infile, outfile
       return outfile
     end
     uri = ::URI.parse url
