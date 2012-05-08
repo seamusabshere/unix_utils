@@ -14,7 +14,7 @@ module UnixUtils
     outfile = tmp_path url
     if url.start_with?('/') or url.start_with?('file://')
       # deal with local files
-      ::FileUtils.cp url.delete('file://'), path
+      ::FileUtils.cp url.delete('file://'), outfile
       return outfile
     end
     uri = ::URI.parse url
