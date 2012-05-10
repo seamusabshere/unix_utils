@@ -1,3 +1,9 @@
+0.0.12 / 2012-05-09
+
+* Bug fixes
+
+  * Unreleased code (dos2unix and unix2dos) appeared in gem release - got rid of that.
+
 0.0.11 / 2012-05-07
 
 * Bug fixes
