@@ -1,3 +1,9 @@
+0.0.13 / 2012-05-16
+
+* Bug fixes
+
+  * `which -s` didn't work on all platforms
+
 0.0.12 / 2012-05-09
 
 * Bug fixes

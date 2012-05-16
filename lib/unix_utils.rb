@@ -240,7 +240,8 @@ module UnixUtils
     bin = bin.to_s
     return @@available_query[bin] if defined?(@@available_query) and @@available_query.is_a?(::Hash) and @@available_query.has_key?(bin)
     @@available_query ||= {}
-    @@available_query[bin] = ::Kernel.system 'which', '-s', bin
+    `which #{bin}`
+    @@available_query[bin] = $?.success?
   end
 
   def self.tmp_path(ancestor, extname = nil) # :nodoc:
