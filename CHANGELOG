@@ -1,3 +1,9 @@
+unreleased
+
+* Breaking changes
+
+  * UnixUtils.du_sk -> UnixUtils.du (but it's still `du -sk`)
+
 0.0.13 / 2012-05-16
 
 * Bug fixes

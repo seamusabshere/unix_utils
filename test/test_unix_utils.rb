@@ -61,9 +61,9 @@ describe UnixUtils do
     end
   end
 
-  describe :du_sk do
+  describe :du do
     it "calculates the size of a directory in bytes" do
-      UnixUtils.du_sk('directory').must_equal 8
+      UnixUtils.du('directory').must_equal 8
     end
   end
 

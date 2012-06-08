@@ -71,7 +71,7 @@ module UnixUtils
     end
   end
 
-  def self.du_sk(srcdir)
+  def self.du(srcdir)
     srcdir = ::File.expand_path srcdir
     argv = ['du', '-sk', srcdir]
     stdout = spawn argv
