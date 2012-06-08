@@ -45,6 +45,12 @@ Same as plain, except returns a string with the (useful part of the) output (`Un
 
 Same as plain, except deletes the input file.
 
+## Another way to do three variations
+
+1. `UnixUtils.xyz`
+2. `UnixUtils::String.xyz`
+3. `UnixUtils::Bang.xyz`
+
 ## But I can just spawn these myself
 
 This lib was created to ease the pain of remembering command options for Ubuntu vs. Gentoo vs. OSX&mdash;deciding which spawning method to use&mdash;possibly handling pipes...
