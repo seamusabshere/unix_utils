@@ -1,6 +1,6 @@
 # unix_utils
 
-Like FileUtils, but provides zip, unzip, bzip2, bunzip2, tar, untar, sed, du, md5sum, shasum, cut, head, tail, wc, unix2dos, dos2unix, iconv, curl, perl, etc.
+Like FileUtils, but provides access to system binaries like zip, unzip, bzip2, bunzip2, tar, untar, sed, du, md5sum, shasum, cut, head, tail, wc, unix2dos, dos2unix, iconv, curl, perl, etc.
 
 Works in MRI 1.8.7+, MRI 1.9.2+, and JRuby 1.6.7+
 
@@ -29,59 +29,43 @@ Use a subprocess to perform a big task and then get out of memory.
   </tr>
 </table>
 
-## Rules (what you can expect)
+## Three variations
 
-For commands like zip, untar, sed, head, cut, dos2unix, etc.:
+### Plain (`UnixUtils.xyz`)
 
-1. Just returns a path to the output, randomly named, located in the system tmp dir (`UnixUtils.unzip('kittens.zip)` &rarr; `'/tmp/unix_utils-129392301-kittens'`)
-2. Never touches the input
+1. Returns path to output file or dir, randomly named, located in the system tmp dir (`UnixUtils.unzip('kittens.zip)` &rarr; `'/tmp/unix_utils-129392301-kittens'`)
+2. Doesn't modify input files
 3. Sticks a useful file extension on the output, if applicable (`UnixUtils.tar('puppies/')` &rarr; `'/tmp/unix_utils-99293192-puppies.tar'`)
 
-For commands like du, md5sum, shasum, etc.:
+### String (`UnixUtils.xyz_s`)
 
-1. Just returns the good stuff (the checksum, for example, not the filename that is listed after it in the standard command output)
-2. Never touches the input
+Same as plain, except returns a string with the (useful part of the) output (`UnixUtils.shasum('kittens.zip)` &rarr; `"8b051eb364edf451e8e9344cc103a666f437753a"`)
+
+### Bang (`UnixUtils.xyz!`)
+
+Same as plain, except deletes the input file.
 
 ## But I can just spawn these myself
 
-This lib was created to ease the pain of remembering command options for Gentoo, deciding which spawning method to use, possibly handling pipes...
+This lib was created to ease the pain of remembering command options for Ubuntu vs. Gentoo vs. OSX&mdash;deciding which spawning method to use&mdash;possibly handling pipes...
 
+    # you could do this yourself
     require 'tmpdir'
     destdir = File.join(Dir.tmpdir, "kittens_#{Kernel.rand(1e11)}")
     require 'open3'
-    Open3.popen3('unzip', '-q', '-n', 'kittens.zip, '-d', destdir) do |stdin, stdout, stderr|
+    Open3.popen3('unzip', '-qq', '-n', 'kittens.zip, '-d', destdir) do |stdin, stdout, stderr|
       stdin.close
       @error_message = stderr.read
     end
+    $stderr.puts @error_message
 
 is replaced safely with
 
     destdir = UnixUtils.unzip 'kittens.zip'
 
-## But I can just use `Digest::SHA256`
-
-(Note: [Balazs Kutil](https://github.com/bkutil) pointed out [this is a bad example](https://gist.github.com/1950707)... I will replace it soon)
-
-This will load an entire file into memory before it can be processed...
-
-    require 'digest'
-    str = Digest::SHA256.hexdigest File.read('kittens.zip')
-
-... so you're really replacing this ...
-
-    sha256 = Digest::SHA256.new
-    File.open('kittens.zip', 'r') do |f|
-      while chunk = f.read(4_194_304)
-        sha256 << chunk
-      end
-    end
-    str = sha256.hexdigest
-
-You get the same low memory footprint with
-
-    str = UnixUtils.shasum('kittens.zip', 256)
-
 ## Compatibility
+
+This is not a magic pure-Ruby replacement for all these utilities. They need to be available in your path and you probably have to be running Unix.
 
 Now using [`posix-spawn`](https://github.com/rtomayko/posix-spawn) for speed. Thanks for the suggestion [jjb](https://github.com/jjb)!
 
