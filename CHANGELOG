@@ -3,6 +3,7 @@ unreleased
 * Breaking changes
 
   * UnixUtils.du_sk -> UnixUtils.du (but it's still `du -sk`)
+  * Heuristic for detecting attempts to curl a local file changed - now it looks for absence of '://'
 
 0.0.13 / 2012-05-16
 

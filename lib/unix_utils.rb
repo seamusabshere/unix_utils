@@ -12,9 +12,12 @@ module UnixUtils
 
   def self.curl(url, form_data = nil)
     outfile = tmp_path url
-    if url.start_with?('file://') or url.start_with?('/') or url.count('/') == 0
+    if url.start_with?('file://') or not url.include?('://')
       # deal with local files
       infile = ::File.expand_path url.sub('file://', '')
+      unless File.readable?(infile)
+        raise "[unix_utils] #{url.inspect} does not exist or is not readable on the local filesystem."
+      end
       ::FileUtils.cp infile, outfile
       return outfile
     end
