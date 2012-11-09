@@ -2,7 +2,9 @@
 
 Like FileUtils, but provides zip, unzip, bzip2, bunzip2, tar, untar, sed, du, md5sum, shasum, cut, head, tail, wc, unix2dos, dos2unix, iconv, curl, perl, etc.
 
-Works in MRI 1.8.7+, MRI 1.9.2+, and JRuby 1.6.7+
+You must have these binaries in your `PATH`. _Not_ a pure-ruby implementation of all these UNIX greats!
+
+Works in MRI 1.8.7+, MRI 1.9.2+, and JRuby 1.6.7+. No gem dependencies; uses stdlib
 
 ## Real-world usage
 
@@ -79,13 +81,18 @@ This will load an entire file into memory before it can be processed...
 
 You get the same low memory footprint with
 
-    str = UnixUtils.shasum('kittens.zip', 256)
+    str = UnixUtils.shasum 'kittens.zip', 256
 
 ## Compatibility
 
-Now using [`posix-spawn`](https://github.com/rtomayko/posix-spawn) for speed. Thanks for the suggestion [jjb](https://github.com/jjb)!
+Uses `open3` because it's in the Ruby stdlib and is consistent across MRI and JRuby.
 
-Previously used `open3` because it's in the Ruby stdlib and is consistent across MRI and JRuby.
+## Wishlist
+
+* cheat sheet based on [GNU Coreutils cheat sheet](www.catonmat.net/download/gnu-coreutils-cheat-sheet.pdf)
+* yarddocs
+* properly use Dir.tmpdir(name), etc.
+* smarter tmp file name generation - don't include url params for curl, etc.
 
 ## Authors
 
@@ -93,4 +100,4 @@ Previously used `open3` because it's in the Ruby stdlib and is consistent across
 
 ## Copyright
 
-Copyright (c) 2012 Brighter Planet. See LICENSE for details.
+Copyright (c) 2012 Seamus Abshere

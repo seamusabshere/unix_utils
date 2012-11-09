@@ -17,5 +17,10 @@ Gem::Specification.new do |gem|
   gem.version       = UnixUtils::VERSION
   gem.license       = 'MIT'
 
-  gem.add_runtime_dependency 'posix-spawn'
+  gem.add_development_dependency 'minitest'
+  if RUBY_VERSION >= '1.9'
+    gem.add_development_dependency 'minitest-reporters'
+  end
+  gem.add_development_dependency 'yard'
+  gem.add_development_dependency 'pry'
 end

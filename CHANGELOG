@@ -1,3 +1,13 @@
+0.0.15 / 2012-11-09
+
+* Enhancements
+
+  * Back to stdlib open3 because C extension support is not enabled by default in JRuby 1.7+
+
+* Known issues
+
+  * stderr is not captured in JRuby 1.7.0 because of https://jira.codehaus.org/browse/JRUBY-6986
+
 0.0.14 / 2012-07-06
 
 * Breaking changes

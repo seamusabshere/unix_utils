@@ -1,11 +1,13 @@
 require 'rubygems'
 require 'bundler/setup'
+require 'pry'
 
 require 'minitest/spec'
 require 'minitest/autorun'
-require 'minitest/reporters'
-MiniTest::Unit.runner = MiniTest::SuiteRunner.new
-MiniTest::Unit.runner.reporters << MiniTest::Reporters::SpecReporter.new
+if RUBY_VERSION >= '1.9'
+  require 'minitest/reporters'
+  MiniTest::Reporters.use! MiniTest::Reporters::SpecReporter.new
+end
 
 require 'unix_utils'
 
