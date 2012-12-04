@@ -442,7 +442,7 @@ describe UnixUtils do
       and_again = UnixUtils.tmp_path(again)
       File.basename(and_again).start_with?('unix_utils').must_equal true
       and_again.scan(/unix_utils/).length.must_equal 1
-      and_again.must_include('basename_extname')
+      and_again.must_include('basename.extname')
     end
   end
 

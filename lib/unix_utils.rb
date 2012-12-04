@@ -250,7 +250,8 @@ module UnixUtils
   def self.tmp_path(ancestor, extname = nil) # :nodoc:
     ancestor = ancestor.to_s
     extname ||= File.extname ancestor
-    basename = File.basename ancestor.gsub(/unix_utils_[a-f0-9]{8,}_/, '')
+    basename = File.basename ancestor, extname
+    basename.gsub! /^unix_utils_[a-f0-9]{8,}_/, ''
     basename.gsub! /\W+/, '_'
     File.join Dir.tmpdir, "unix_utils_#{SecureRandom.hex(4)}_#{basename[0..(234-extname.length)]}#{extname}"
   end
