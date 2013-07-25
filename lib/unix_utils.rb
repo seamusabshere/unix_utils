@@ -329,6 +329,7 @@ module UnixUtils
             fd.close
           else
             begin
+              # buf << fd.gets(BUFSIZE) # maybe?
               buf << fd.readpartial(BUFSIZE)
             rescue Errno::EAGAIN, Errno::EINTR
             end
