@@ -34,21 +34,21 @@ describe UnixUtils do
     end
 
     it "deals safely with local files" do
-      UnixUtils.curl_s('utf8.txt').must_include 'Hola, ¿cómo estás?'
-      UnixUtils.curl_s(File.expand_path('utf8.txt')).must_include 'Hola, ¿cómo estás?'
-      UnixUtils.curl_s("file://#{File.expand_path('utf8.txt')}").must_include 'Hola, ¿cómo estás?'
+      UnixUtils.curl_s('utf 8.txt').must_include 'Hola, ¿cómo estás?'
+      UnixUtils.curl_s(File.expand_path('utf 8.txt')).must_include 'Hola, ¿cómo estás?'
+      UnixUtils.curl_s("file://#{File.expand_path('utf 8.txt')}").must_include 'Hola, ¿cómo estás?'
     end
   end
 
   describe :shasum do
     it "checksums a file with SHA-1" do
-      UnixUtils.shasum('directory.zip', 1).must_equal 'c0abb36c923ed7bf87ebb8d7097cb8e264e528d2'
+      UnixUtils.shasum('a directory.zip', 1).must_equal 'c0abb36c923ed7bf87ebb8d7097cb8e264e528d2'
     end
     it "checksums a file with SHA-256" do
-      UnixUtils.shasum('directory.zip', 256).must_equal '661af2b7b0993088263228b071b649a88d82a6a655562162c32307d1e127f27a'
+      UnixUtils.shasum('a directory.zip', 256).must_equal '661af2b7b0993088263228b071b649a88d82a6a655562162c32307d1e127f27a'
     end
     it "works just as well with absolute paths" do
-      target_path = File.join(Dir.pwd, 'directory.zip')
+      target_path = File.join(Dir.pwd, 'a directory.zip')
       Dir.chdir('/') do
         UnixUtils.shasum(target_path, 256).must_equal '661af2b7b0993088263228b071b649a88d82a6a655562162c32307d1e127f27a'
       end
@@ -57,20 +57,20 @@ describe UnixUtils do
 
   describe :md5sum do
     it "checksums a file" do
-      UnixUtils.md5sum('directory.zip').must_equal 'd6e15da798ae19551da6c49ec09afaef'
+      UnixUtils.md5sum('a directory.zip').must_equal 'd6e15da798ae19551da6c49ec09afaef'
     end
   end
 
   describe :du do
     it "calculates the size of a directory in bytes" do
-      UnixUtils.du('directory').must_equal 8
+      UnixUtils.du('a directory').must_equal 8
     end
   end
 
   describe :unzip do
     before do
-      @infile = 'directory.zip'
-      @anonymous_infile = 'directory-really-a-z_i_p-shh'
+      @infile = 'a directory.zip'
+      @anonymous_infile = 'a directory really a z i p shh'
     end
     it "unpacks a DIRECTORY located in the tmp directory" do
       assert_unpack_dir :unzip, @infile
@@ -85,8 +85,8 @@ describe UnixUtils do
 
   describe :untar do
     before do
-      @infile = 'directory.tar'
-      @anonymous_infile = 'directory-really-a-t_a_r-shh'
+      @infile = 'a directory.tar'
+      @anonymous_infile = 'a directory really a t a r shh'
     end
     it "unpacks a DIRECTORY located in the tmp directory" do
       assert_unpack_dir :untar, @infile
@@ -101,8 +101,8 @@ describe UnixUtils do
 
   describe :bunzip2 do
     before do
-      @infile = 'file.bz2'
-      @anonymous_infile = 'file-really-a-b_z_2-shh'
+      @infile = 'a file.bz2'
+      @anonymous_infile = 'file really a b z 2 shh'
     end
     it "unpacks a FILE located in the tmp directory" do
       assert_unpack_file :bunzip2, @infile
@@ -117,8 +117,8 @@ describe UnixUtils do
 
   describe :gunzip do
     before do
-      @infile = 'file.gz'
-      @anonymous_infile = 'file-really-a-g_z-shh'
+      @infile = 'a file.gz'
+      @anonymous_infile = 'file really a g z shh'
     end
     it "unpacks a FILE located in the tmp directory" do
       assert_unpack_file :gunzip, @infile
@@ -133,7 +133,7 @@ describe UnixUtils do
 
   describe :bzip2 do
     before do
-      @infile = 'directory.tar'
+      @infile = 'a directory.tar'
     end
     it "packs a FILE to a FILE in the tmp directory" do
       assert_pack :bzip2, @infile
@@ -150,7 +150,7 @@ describe UnixUtils do
 
   describe :gzip do
     before do
-      @infile = 'directory.tar'
+      @infile = 'a directory.tar'
     end
     it "packs a FILE to a FILE in the tmp directory" do
       assert_pack :gzip, @infile
@@ -167,7 +167,7 @@ describe UnixUtils do
 
   describe :zip do
     before do
-      @srcdir = 'directory'
+      @srcdir = 'a directory'
     end
     it "packs a DIRECTORY to a FILE in the tmp directory" do
       assert_pack :zip, @srcdir
@@ -184,7 +184,7 @@ describe UnixUtils do
 
   describe :tar do
     before do
-      @srcdir = 'directory'
+      @srcdir = 'a directory'
     end
     it "packs a DIRECTORY to a FILE in the tmp directory" do
       assert_pack :tar, @srcdir
@@ -405,13 +405,13 @@ describe UnixUtils do
 
   describe :iconv do
     it 'converts files from utf-8 to latin1' do
-      outfile = UnixUtils.iconv('utf8.txt', 'ISO-8859-1', 'UTF-8')
-      UnixUtils.md5sum(outfile).must_equal UnixUtils.md5sum('iso-8859-1.txt')
+      outfile = UnixUtils.iconv('utf 8.txt', 'ISO-8859-1', 'UTF-8')
+      UnixUtils.md5sum(outfile).must_equal UnixUtils.md5sum('iso 8859 1.txt')
       safe_delete outfile
     end
     it 'converts files from latin1 to utf-8' do
-      outfile = UnixUtils.iconv('iso-8859-1.txt', 'UTF-8', 'ISO-8859-1')
-      UnixUtils.md5sum(outfile).must_equal UnixUtils.md5sum('utf8.txt')
+      outfile = UnixUtils.iconv('iso 8859 1.txt', 'UTF-8', 'ISO-8859-1')
+      UnixUtils.md5sum(outfile).must_equal UnixUtils.md5sum('utf 8.txt')
       safe_delete outfile
     end
   end
